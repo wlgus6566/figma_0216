@@ -1,0 +1,9 @@
+{
+  "name": "My plugin2",
+  "id": "My plugin",
+  "api": "1.0.0",
+  "main": "code2.js",
+  "ui": "ui2.html",
+  "editorType": ["figma", "dev"],
+  "capabilities": ["inspect"]
+}

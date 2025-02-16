@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Figma to Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 400px;
+        }
+        .status {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .loading {
+            color: blue;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2>Figma → Code 변환기</h2>
+    <button id="convert">변환 시작</button>
+    <p id="status" class="status"></p>
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById('convert').onclick = () => {
+            document.getElementById('status').textContent = "⏳ 변환 중...";
+            document.getElementById('status').className = "status loading";
+            document.getElementById('output').textContent = "";
+
+            console.log('📢 변환 요청 전송');
+            parent.postMessage({ pluginMessage: { type: 'convert' } }, '*');
+        };
+
+        window.onmessage = (event) => {
+            const msg = event.data.pluginMessage;
+
+            if (msg.type === 'generatedCode') {
+                document.getElementById('output').textContent = msg.code;
+                document.getElementById('status').textContent = "✅ 변환 완료!";
+                document.getElementById('status').className = "status success";
+            } else if (msg.type === 'loading') {
+                document.getElementById('status').textContent = msg.message;
+                document.getElementById('status').className = "status loading";
+            } else if (msg.type === 'error') {
+                alert(msg.message);
+                document.getElementById('status').textContent = "❌ 오류 발생: " + msg.message;
+                document.getElementById('status').className = "status error";
+            }
+        };
+    </script>
+</body>
+</html>
